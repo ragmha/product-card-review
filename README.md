@@ -65,6 +65,8 @@ GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true copilot --experimental \
 In CI, fill `changed` from `git diff --name-only`.
 [`results/one-line-change.md`](results/one-line-change.md) records a run on a
 one-line CSS change.
+[`results/recording/`](results/recording/README.md) has the session log of a
+recorded full run, to open in [session-flame](https://lab.raghib.io/session-flame/).
 
 ## Resume
 
