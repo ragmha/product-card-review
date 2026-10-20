@@ -1,0 +1,131 @@
+{
+  "report": {
+    "design": [
+      {
+        "severity": "medium",
+        "location": "product-card.css: .product-card__add",
+        "issue": "The background hard-codes #2563eb instead of using the required --color-action token.",
+        "fix": "Set background to var(--color-action)."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.css: .product-card__body",
+        "issue": "The 13px padding is outside the permitted spacing scale.",
+        "fix": "Use an approved spacing token, such as var(--space-4)."
+      },
+      {
+        "severity": "high",
+        "location": "product-card.js: wishlist span; product-card.css: .product-card__wishlist",
+        "issue": "The clickable wishlist span is not keyboard-focusable and has no required visible focus state.",
+        "fix": "Use a native button and add a focus-visible style with a 2px --color-focus outline and 2px offset."
+      },
+      {
+        "severity": "low",
+        "location": "product-card.css: .product-card__wishlist and .product-card__add",
+        "issue": "The wishlist uses 1.125rem text and the add button uses weight 600; both must be 1rem regular under the typography rules.",
+        "fix": "Set wishlist font-size to 1rem and add-button font-weight to 400."
+      }
+    ],
+    "product": [
+      {
+        "severity": "high",
+        "location": "product-card.js: renderProductCard price markup",
+        "issue": "Harbor Pour-Over Kettle has originalPrice 64 and price 49, but only $49.00 is rendered. The required struck-through original price is missing.",
+        "fix": "For discounted products, render the sale price alongside the original price in a <del> element."
+      },
+      {
+        "severity": "high",
+        "location": "product-card.js: Add to cart button and mountProductCard",
+        "issue": "Ridge Stoneware Mug has stock 0, but its Add to cart button remains enabled and invokes onAdd when clicked.",
+        "fix": "Disable Add to cart when stock is zero and prevent its handler from adding unavailable products."
+      },
+      {
+        "severity": "medium",
+        "location": "index.html: onAdd and onWishlist callbacks",
+        "issue": "Both actions only write to the console. Neither product can actually be added to a cart or saved to a wishlist through this page.",
+        "fix": "Connect the callbacks to cart and wishlist state or services and expose the resulting state to shoppers."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.js: product-card__wishlist span",
+        "issue": "The wishlist control for both products is a click-only span without a keyboard interaction or accessible action label.",
+        "fix": "Use a labeled native button, support keyboard activation, and expose its saved state."
+      },
+      {
+        "severity": "high",
+        "location": "product-card.js: product-card__description interpolation",
+        "issue": "Merchant descriptions are inserted directly into innerHTML without sanitization. This permits executable HTML rather than limiting descriptions to basic formatting.",
+        "fix": "Sanitize descriptions with an allowlist of supported formatting tags and safe attributes before inserting them."
+      },
+      {
+        "severity": "medium",
+        "location": "index.html: lang and messages fetch; product-card.js: formatPrice and stockLabel",
+        "issue": "The page always loads English messages and declares lang=\"en\". Prices hardcode a dollar sign and decimal formatting, and stock text is assembled from English-ordered fragments. German and Arabic localization is not implemented.",
+        "fix": "Select locale-specific messages, set language and direction, format prices with Intl.NumberFormat using product.currency, and translate complete stock messages with count interpolation."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.js: product-card__image markup",
+        "issue": "Both product images omit an alt attribute, leaving their accessible text undefined and potentially exposing image filenames to screen-reader users.",
+        "fix": "Provide meaningful alternative text, or alt=\"\" if the adjacent product name makes the linked image redundant."
+      }
+    ],
+    "accessibility": [
+      {
+        "severity": "high",
+        "location": "product-card.js:27, mountProductCard wishlist click listener",
+        "issue": "The wishlist action is a clickable span with no keyboard focus or keyboard activation, button role, or meaningful accessible name. The heart glyph alone does not identify its action. This fails WCAG 2.2 SC 2.1.1 (Keyboard) and 4.1.2 (Name, Role, Value).",
+        "fix": "Use a native button with type=\"button\" and an accessible name such as \"Add to wishlist\". Preserve a visible keyboard focus indicator."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.js:24",
+        "issue": "The product image has no alt attribute, leaving its text alternative undefined and potentially exposing the filename to screen readers. This fails WCAG 2.2 SC 1.1.1 (Non-text Content).",
+        "fix": "Provide descriptive alt text when the image conveys additional product information. If it merely duplicates the adjacent product name within the same link, use alt=\"\"."
+      }
+    ],
+    "security": [
+      {
+        "severity": "high",
+        "location": "product-card.js: renderProductCard(), product.description; mountProductCard(), element.innerHTML",
+        "issue": "Merchant-controlled descriptions are interpolated as raw HTML and inserted through innerHTML. A description such as <img src=x onerror=alert(document.domain)> executes JavaScript in the page's origin.",
+        "fix": "Escape descriptions with escapeHtml or render them using textContent. If rich HTML is required, sanitize it with a maintained allowlist-based HTML sanitizer before insertion."
+      },
+      {
+        "severity": "high",
+        "location": "product-card.js: renderProductCard(), product.url in the link href",
+        "issue": "HTML escaping does not validate URL schemes. A merchant can supply javascript:alert(document.domain), causing JavaScript execution in the page's origin when the product link is clicked.",
+        "fix": "Parse and validate URLs before rendering. Allow only approved HTTP/HTTPS protocols and any required destination restrictions; reject unsafe URLs rather than placing them in href. Retain HTML attribute escaping."
+      }
+    ]
+  },
+  "translations": {
+    "de": {
+      "messages": {
+        "addToCart": "In den Warenkorb",
+        "inStock": "Auf Lager",
+        "onlyLeft": "Nur noch {count} verfügbar",
+        "outOfStock": "Nicht auf Lager"
+      },
+      "problems": [
+        "product-card.js: formatPrice hardcodes a leading '$' and decimal point. Use Intl.NumberFormat with the German locale and the product's actual currency.",
+        "product-card.js: Product names and descriptions render unchanged; translating messages alone will not localize English product data.",
+        "product-card.css: Long German compound words can overflow the 320px-wide card and be clipped by overflow: hidden. Add overflow-wrap: anywhere; optionally use hyphens: auto with lang=\"de\"."
+      ]
+    },
+    "ar": {
+      "messages": {
+        "addToCart": "أضف إلى السلة",
+        "inStock": "متوفر",
+        "onlyLeft": "الكمية المتبقية: {count} فقط",
+        "outOfStock": "غير متوفر"
+      },
+      "problems": [
+        "product-card.js sets neither lang=\"ar\" nor dir=\"rtl\". Unless supplied by an ancestor, Arabic layout remains LTR; CSS logical positioning follows that incorrect direction.",
+        "formatPrice hardcodes \"$\" and Western decimal formatting. Use Intl.NumberFormat with the Arabic locale and the actual currency.",
+        "stockLabel inserts an unlocalized count. Use Intl.NumberFormat; quantity wording involving nouns also needs Arabic plural rules.",
+        "Product names and descriptions come directly from product data, not translations. They need localized content; mixed-direction names also need bidi isolation."
+      ]
+    }
+  }
+}
