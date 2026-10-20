@@ -1,0 +1,44 @@
+{
+  "report": {
+    "design": [
+      {
+        "severity": "medium",
+        "location": "product-card.css: .product-card__add",
+        "issue": "The default background is hard-coded as #2563eb instead of using the required --color-action token.",
+        "fix": "Set background to var(--color-action)."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.css: .product-card__wishlist; product-card.js: wishlist span",
+        "issue": "The wishlist has a hover state but no required focus outline. Its clickable span is also not keyboard-focusable.",
+        "fix": "Render the wishlist as a button and add a :focus-visible rule with a 2px solid var(--color-focus) outline and 2px offset."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.css: .product-card and .product-card__link:focus-visible",
+        "issue": "The card's overflow: hidden clips the link's outward focus outline along the card's top and side edges.",
+        "fix": "Keep the focus outline outside the clipping region, for example by clipping only the image rather than the whole card."
+      },
+      {
+        "severity": "low",
+        "location": "product-card.css: .product-card__wishlist and .product-card__add",
+        "issue": "The wishlist uses 1.125rem and the add button uses font-weight: 600, contrary to the required 1rem regular styling for everything except the product name and price.",
+        "fix": "Use 1rem regular text for both controls while preserving the specified name and price typography."
+      }
+    ],
+    "accessibility": [
+      {
+        "severity": "high",
+        "location": "product-card.js: renderProductCard wishlist span and mountProductCard wishlist click handler; product-card.css: .product-card__wishlist",
+        "issue": "The wishlist control is a click-only span. It has no button role, descriptive accessible name, or keyboard focus/activation support. Its pointer styling does not provide these semantics. This fails WCAG 2.2 AA requirements 2.1.1 and 4.1.2.",
+        "fix": "Use a native button with type=\"button\" and a descriptive accessible name such as \"Add to wishlist\". Preserve visible keyboard focus and expose aria-pressed if it toggles wishlist membership."
+      },
+      {
+        "severity": "medium",
+        "location": "product-card.js: renderProductCard img.product-card__image",
+        "issue": "The product image has no alt attribute, leaving its text alternative undefined and potentially exposing its filename to screen readers. This fails WCAG 1.1.1.",
+        "fix": "Provide descriptive alt text for informative product imagery, or alt=\"\" if the image adds nothing beyond the product name already included in the same link."
+      }
+    ]
+  }
+}

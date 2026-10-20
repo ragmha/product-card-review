@@ -3,9 +3,10 @@
 A small product card, and a GitHub Copilot dynamic workflow that reviews it
 before it ships.
 
-The card has ten deliberate issues, so the reviews have something to find.
-Don't copy it into a real product. [`results/`](results/) lists the issues and
-what one recorded run found.
+The card was written with ten deliberate issues, so the reviews have something
+to find; one, the off-scale padding, has since been fixed. Don't copy it into a
+real product. [`results/`](results/) lists the issues and what two recorded
+runs found.
 
 - `product-card.js`, `product-card.css` and `index.html` are the card: plain
   HTML, CSS and JavaScript with no build step.
@@ -62,6 +63,8 @@ GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true copilot --experimental \
 ```
 
 In CI, fill `changed` from `git diff --name-only`.
+[`results/one-line-change.md`](results/one-line-change.md) records a run on a
+one-line CSS change.
 
 ## Resume
 

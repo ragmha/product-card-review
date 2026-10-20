@@ -1,7 +1,8 @@
-# One recorded run
+# The first recorded run
 
-I ran the workflow once and kept what it returned. This page records that run.
-Another run, model or setup will find different things.
+I ran the full workflow once and kept what it returned. This page records that
+run. Another run, model or setup will find different things.
+[`one-line-change.md`](one-line-change.md) records a second, smaller run.
 
 | | |
 | --- | --- |
