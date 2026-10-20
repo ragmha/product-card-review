@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Product card</title>
+    <link rel="stylesheet" href="product-card.css">
+    <style>
+      body {
+        margin: 0;
+        padding: var(--space-5);
+        background: var(--color-surface);
+        color: var(--color-text);
+        font-family: system-ui, sans-serif;
+      }
+
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--space-5);
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Product card</h1>
+      <ul class="cards" id="cards"></ul>
+    </main>
+    <script type="module">
+      import { mountProductCard } from "./product-card.js";
+
+      const [products, messages] = await Promise.all([
+        fetch("./data/products.json").then((response) => response.json()),
+        fetch("./messages/en.json").then((response) => response.json()),
+      ]);
+
+      const list = document.querySelector("#cards");
+      for (const product of products) {
+        const item = document.createElement("li");
+        list.append(item);
+        mountProductCard(item, product, messages, {
+          onAdd: (added) => console.log("add to cart", added.id),
+          onWishlist: (saved) => console.log("save to wishlist", saved.id),
+        });
+      }
+    </script>
+  </body>
+</html>

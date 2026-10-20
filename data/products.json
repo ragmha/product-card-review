@@ -1,0 +1,23 @@
+[
+  {
+    "id": "kettle-01",
+    "name": "Harbor Pour-Over Kettle",
+    "url": "/products/harbor-pour-over-kettle",
+    "image": "images/kettle.svg",
+    "description": "A gooseneck spout for a <strong>slow, steady pour</strong>. Holds 1 liter.",
+    "price": 49,
+    "originalPrice": 64,
+    "currency": "USD",
+    "stock": 3
+  },
+  {
+    "id": "mug-02",
+    "name": "Ridge Stoneware Mug",
+    "url": "/products/ridge-stoneware-mug",
+    "image": "images/mug.svg",
+    "description": "Glazed stoneware that keeps coffee warm. Holds 350 ml.",
+    "price": 18,
+    "currency": "USD",
+    "stock": 0
+  }
+]
