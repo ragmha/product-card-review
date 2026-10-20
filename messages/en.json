@@ -1,7 +1,6 @@
 {
   "addToCart": "Add to cart",
   "inStock": "In stock",
-  "only": "Only",
-  "left": "left",
+  "onlyLeft": "Only {count} left",
   "outOfStock": "Out of stock"
 }

@@ -13,7 +13,7 @@ function formatPrice(amount) {
 
 function stockLabel(product, t) {
   if (product.stock > 5) return t.inStock;
-  if (product.stock > 0) return `${t.only} ${product.stock} ${t.left}`;
+  if (product.stock > 0) return t.onlyLeft.replace("{count}", product.stock);
   return t.outOfStock;
 }
 
