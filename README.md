@@ -46,6 +46,23 @@ reads, add `--allow-tool=read`.
 
 The run pauses at `approve-copy`, prints its run ID and exits with status 1.
 
+### Review only what changed
+
+Pass `changed`, the files a change touched, and the workflow runs only the
+steps those files need. `routes` in `workflow.mjs` maps them: CSS gets design
+and accessibility, `messages/` gets translation, and `data/` gets product and
+security. Any other file gets every step. The reviewers focus on the changed
+files and read the rest for context. Translation, and the pause before it,
+runs only when a route asks for it.
+
+```sh
+GITHUB_COPILOT_PROMPT_MODE_EXTENSIONS=true copilot --experimental \
+  workflow run product-card-review \
+  --args '{"locales":["de","ar"],"changed":["product-card.css"]}'
+```
+
+In CI, fill `changed` from `git diff --name-only`.
+
 ## Resume
 
 Change what you want, then resume the run in the same session. On resume the

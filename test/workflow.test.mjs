@@ -1,12 +1,14 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { lenses, meta, run } from "../.github/extensions/product-card-review/workflow.mjs";
+import { lenses, meta, plan, run } from "../.github/extensions/product-card-review/workflow.mjs";
 
-function fakeContext(answers, { paused = false } = {}) {
+function fakeContext(answers, { paused = false, changed } = {}) {
   const events = [];
+  const prompts = [];
   return {
     events,
-    args: { locales: ["de", "ar"] },
+    prompts,
+    args: { locales: ["de", "ar"], changed },
     phase: (title) => events.push(`phase:${title}`),
     log: (message) => events.push(`log:${message}`),
     pause: async (key) => {
@@ -14,8 +16,9 @@ function fakeContext(answers, { paused = false } = {}) {
       if (paused) throw new Error("paused");
     },
     parallel: (thunks) => Promise.all(thunks.map((thunk) => thunk().catch(() => null))),
-    agent: async (_prompt, { label }) => {
+    agent: async (prompt, { label }) => {
       events.push(`agent:${label}`);
+      prompts.push(prompt);
       return answers[label] ?? null;
     },
   };
@@ -48,6 +51,7 @@ test("the first attempt reviews four ways and stops before translating", async (
     "agent:review:security",
   ]);
   assert.equal(ctx.events.at(-1), "pause:approve-copy");
+  assert.ok(ctx.prompts.every((prompt) => prompt.endsWith("Report only problems you can point to.")));
 });
 
 test("after approval it translates each locale", async () => {
@@ -68,4 +72,23 @@ test("a failed review stays null instead of looking clean", async () => {
   assert.deepEqual(result.report.product, []);
   assert.equal(result.report.security, null);
   assert.ok(ctx.events.includes("log:security: no result"));
+});
+
+test("routes each changed file to the steps it needs", () => {
+  assert.deepEqual([...plan(["product-card.css"])], ["design", "accessibility"]);
+  assert.deepEqual([...plan(["messages/en.json"])], ["translate"]);
+  assert.deepEqual([...plan(["data/products.json"])], ["product", "security"]);
+  assert.equal(plan(["product-card.js"]).size, 5);
+  assert.equal(plan(undefined).size, 5);
+});
+
+test("a CSS change gets two focused reviews and no pause", async () => {
+  const ctx = fakeContext(answers, { changed: ["product-card.css"] });
+  const result = await run(ctx);
+  const agents = ctx.events.filter((event) => event.startsWith("agent:"));
+  assert.deepEqual(agents, ["agent:review:design", "agent:review:accessibility"]);
+  assert.ok(!ctx.events.includes("pause:approve-copy"));
+  assert.ok(ctx.prompts.every((prompt) => prompt.endsWith("Focus on product-card.css; read the other files only for context.")));
+  assert.deepEqual(Object.keys(result.report), ["design", "accessibility"]);
+  assert.equal(result.translations, undefined);
 });
